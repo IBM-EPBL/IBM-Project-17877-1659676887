@@ -1,0 +1,51 @@
+import time
+import sys
+import ibmiotf.application
+import ibmiotf.device
+import IAMAuthenticator
+
+#Provide your IBM Watson Device Credentials
+organization = "qxzu5g"
+deviceType = "Arduino"
+deviceId = "200119"
+authMethod = "token"
+authToken = "1910231709"
+
+authenticator = IAMAuthenticator('ecfoDiyoaIuYMB8g_a4PRDrqzoRRQnofAYmuCoCNVVGn')
+text_to_speech = TextToSpeechV1(
+    authenticator=authenticator
+)
+
+text_to_speech.set_service_url('https://api.eu-de.text-to-speech.watson.cloud.ibm.com/instances/508c5a8d-2a16-4716-98e3-e4c820611ecf')
+
+print("Medicine time....")
+time.sleep(1)
+
+try:
+	deviceOptions = {"org": organization, "type": deviceType, "id": deviceId, "auth-method": authMethod, "auth-token": authToken}
+	deviceCli = ibmiotf.device.Client(deviceOptions)
+	#..............................................
+	
+except Exception as e:
+	print("Caught exception connecting device: %s" % str(e))
+	sys.exit()
+
+deviceClient.connect()
+while True:
+        #Get events from ibm iot
+        def myEventCallback(event):
+            str = "%s event '%s' received from device [%s]: %s"
+            print(str % (event.format, event.eventId, event.device, json.dumps(event.data)))
+        
+
+        success = deviceClient.subscribeToDeviceEvents("IoTSensor", "json", data, qos=0, on_Event=myEventCallback)
+        if not success:
+            print("Not connected to IoTF")
+        time.sleep(1)
+        deviceClient.deviceEventCallback = myEventCallback
+# Disconnect the device and application from the cloud
+deviceClient.disconnect()
+
+
+
+
